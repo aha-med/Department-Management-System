@@ -66,7 +66,7 @@ class DepartserimpTest {
     }
 
     @Test
-    void deleteDepartmentById() {
+    void should_deleteDepartmentById() {
         long id=1;
         Department department= new Department("ECE",
                 "Coimbatore",
@@ -79,7 +79,39 @@ class DepartserimpTest {
     }
 
     @Test
-    void updateDepartment() {
+    void should_updateDepartment() {
+        // Arrange
+        long departmentId = 1L;
+        Department existingDepartment = new Department("ECE",
+                "Coimbatore",
+                102);
+        existingDepartment.setDepartmentId(departmentId);
+
+        Department updatedDepartment = new Department("ECE",
+                "coimbatore" ,
+                202);
+
+        when(repository.findById(departmentId))
+                .thenReturn(Optional.of(existingDepartment));
+
+
+        // Act
+        Department result = departserimp
+                .updateDepartment(departmentId, updatedDepartment);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(updatedDepartment, result);
+        assertEquals(updatedDepartment.getDepartmentAddress(), result.getDepartmentAddress());
+        assertEquals(updatedDepartment.getDepartmentCode(), result.getDepartmentCode());
+
+
+        verify(repository, times(1))
+                .findById(departmentId);
+
+
+        verify(repository, times(1))
+                .save(existingDepartment);
     }
 
     @Test
